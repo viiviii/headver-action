@@ -6,7 +6,7 @@ description: 'SemVer compatible version that has {head}.{yearweek}.{build}'
 inputs:
   head:
     description: 'head value. The first component of the version'
-    default: '0'
+    default: '1'
     required: false
   build:
     description: 'build value. The first component of the version'
