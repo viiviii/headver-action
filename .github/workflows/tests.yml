@@ -1,0 +1,39 @@
+name: '✅ Tests'
+
+on:
+  pull_request:
+    paths: [ action.yml ]
+
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: '✅ Given nothing'
+        id: given-nothing
+        uses: ./
+      - name: 'Then expected head default is 0'
+        if: startsWith(steps.given-nothing.outputs.version, '0.') == false
+        run: |
+          echo "::error::Expecting actual '${{ steps.given-nothing.outputs.version }}' to start with '0.'"
+          exit 1
+      - name: 'Then expected build default is 0 and suffix is empty'
+        if: endsWith(steps.given-nothing.outputs.version, '.0') == false
+        run: |
+          echo "::error::Expecting actual '${{ steps.given-nothing.outputs.version }}' to start with '.0'"
+          exit 1
+
+      - name: '✅ Given head=1, date=2020-01-01, build=789, suffix=qa'
+        id: given-all-inputs
+        uses: ./
+        with:
+          head: 1
+          date: '2020-01-01'
+          build: 789
+          suffix: qa
+      - name: 'Then expected 1.2001.789+qa'
+        if: steps.given-all-inputs.outputs.version != '1.2001.789+qa'
+        run: |
+          echo "::error::Expecting value to be '1.2001.789+qa' but was '${{ steps.given-all-inputs.outputs.version }}'"
+          exit 1
